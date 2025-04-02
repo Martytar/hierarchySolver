@@ -78,4 +78,5 @@ def solve_simplex(c, A, u, parametric=False):
         f = TreeFunction(u, TreeFunction.Node())
         _solveTableWithParameter(tab, rest, basis, f.primaryNode)
         return f
-
+    else:
+        raise ValueError("Non-parametric method isn't ready yet")

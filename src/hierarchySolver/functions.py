@@ -3,6 +3,7 @@ import numpy as np
 
 class TreeFunction:
     def __init__(self, variables, primaryNode=None):
+        self.dimension = len(variables)
         self.variables = variables
         self.primaryNode = primaryNode
 
