@@ -44,6 +44,8 @@ def _solveTableWithParameter(table, evaluation, basis, currentNode, pair = []):
                 c = i
         if tab[-1, c] >= 0:
             currentNode.expression = _getExpressionFromTable(tab, base)
+            if currentNode.related_tree_function.output_dimension is None:
+                currentNode.related_tree_function.output_dimension = len(currentNode.expression)
             return
 
         # находим множество строк, подозрительных на ведущую строку
@@ -54,7 +56,7 @@ def _solveTableWithParameter(table, evaluation, basis, currentNode, pair = []):
 
         for i in potentRow:
             nextEval = tab[int(i), 0] / tab[int(i), c]
-            nextNode = TreeFunction.Node(nextEval)
+            nextNode = TreeFunction.Node(nextEval, related_tree_function=currentNode.related_tree_function)
             currentNode.links.append(nextNode)
             _solveTableWithParameter(tab, nextEval, base, nextNode, [i, c])
     else:

@@ -1,4 +1,5 @@
 from functions import TreeFunction
+from functions import LinearCombinationFunction
 from simplex_solving_methods import solve_simplex
 import sympy as sp
 import numpy as np
@@ -19,6 +20,10 @@ def run_main():
     f = solve_simplex(c2, A2, u2, True)
 
     print(f.calculate((100, 25, 25)))
+
+    rf = LinearCombinationFunction([2, 4, 2, 4], [f, f])
+    print(rf.calculate([100, 25, 25, 100, 25, 25]))
+
 
 if __name__ == '__main__':
     run_main()
