@@ -29,8 +29,8 @@ def run_main():
     for i in range(k+1, 2*k+1):
         u2 = np.append(u2, [sp.Symbol(f'u_{i}')])
 
-    f1 = solve_simplex(c1, A1, u1, True)
-    f2 = solve_simplex(c2, A2, u2, True)
+    f1 = solve_simplex(a1, A1, u1, True)
+    f2 = solve_simplex(a2, A2, u2, True)
 
     print(f1.calculate((100, 25, 25)))
     print(f2.calculate((100, 25, 25)))
@@ -38,13 +38,10 @@ def run_main():
     print(f1.input_dimension, f1.output_dimension)
     print(f2.input_dimension, f2.output_dimension)
 
-    rf = LinearCombinationFunction(np.array(np.concatenate((a1, a2), 0)), [f1, f2])
+    rf = LinearCombinationFunction(np.array(np.concatenate((c1, c2), 0)), [f1, f2])
     optimal_spot = optimize_by_monte_carlo(rf, ((0, 3, 412), (1, 4, 940), (2, 5, 313)), 500)
     print(optimal_spot)
     print(rf.calculate(optimal_spot))
-
-    print(f1.calculate([132.57630468, 179.05606815, 173.59336551]))
-    print(f2.calculate([274.82147162, 477.11716151, 78.95875927]))
 
 if __name__ == '__main__':
     run_main()

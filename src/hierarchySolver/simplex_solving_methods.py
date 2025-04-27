@@ -1,6 +1,6 @@
 import numpy as np
 import sympy as sp
-from functions import TreeFunction
+from src.hierarchySolver.functions import TreeFunction
 
 #Тут располагаются методы для решения симплексных таблиц (с параметром и без)
 
@@ -18,6 +18,7 @@ def _makeTable(c, A, u):  # компановка симплексной табл
 
     return tab
 
+
 def _getExpressionFromTable(tab, basis):
     n = len(tab[0, :]) - len(tab)
     exp = sp.Matrix(np.zeros(n))
@@ -26,7 +27,8 @@ def _getExpressionFromTable(tab, basis):
             exp[basis[i]-1] = tab[i, 0]
     return exp
 
-def _solveTableWithParameter(table, evaluation, basis, currentNode, pair = []):
+
+def _solveTableWithParameter(table, evaluation, basis, currentNode, pair=[]):
 
     # table -текущая симплексная таблица
     # restricts - текущие ограничения на параметры
@@ -61,13 +63,23 @@ def _solveTableWithParameter(table, evaluation, basis, currentNode, pair = []):
             _solveTableWithParameter(tab, nextEval, base, nextNode, [i, c])
     else:
         # если заданы ведущие строка и столбец, преобразуем таблицу и заново запустим метод рекурсивно
+
+        ##Строки для проверки правильности алгоритма преобразования, удалить после тестирования
+        print("Initial table")
+        printTable(tab)
+
         tab[int(pair[0]), :] /= tab[int(pair[0]), int(pair[1])]
         for i in range(0, len(tab)):
             if i != pair[0]:
                 tab[i, :] -= tab[int(pair[0]), :] * tab[i, int(pair[1])]
 
+        ##Строки для проверки правильности алгоритма преобразования, удалить после тестирования
+        print("Upgraded table")
+        printTable(tab)
+
         base[int(pair[0])] = pair[1]
         _solveTableWithParameter(tab, eval, base, currentNode)
+
 
 def solve_simplex(c, A, u, parametric=False):
     if parametric:
@@ -82,3 +94,14 @@ def solve_simplex(c, A, u, parametric=False):
         return f
     else:
         raise ValueError("Non-parametric method isn't ready yet")
+
+
+def printTable(table):
+    for i in range(len(table)):
+        for j in range(len(table[0])):
+            if type(table[i][j]) == float:
+                print(np.round(table[i][j], 2), end='  ')
+            else:
+                print(table[i][j], end='  ')
+        print()
+    print()

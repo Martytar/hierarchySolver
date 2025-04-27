@@ -1,6 +1,6 @@
 import sympy as sp
 import numpy as np
-
+import copy
 
 class TreeFunction:
     def __init__(self, variables, primaryNode=None):
@@ -23,19 +23,42 @@ class TreeFunction:
             self.expression = expression
 
         def calculate(self, values, variables):
+
+            #В случае, если ресурсы игроку не поступают, произвести он ничего не может, да и симплекс метод не может быть решен для такого случая
+            #Так что просто возвращаем нулевой вектор нужной размерности
+            is_zero_values = True
+            for i in range(len(values)):
+                if values[i] != 0:
+                    is_zero_values = False
+                    break
+            if is_zero_values:
+                return np.zeros(self.related_tree_function.output_dimension)
+
+            #Если ресурсы выданы, то есть возможность решения симплексом, и тогда итерируемся по дереву решений (табличному дереву, если угодно)
             if self.expression is not None:
-                res = self.expression
+                res = copy.deepcopy(self.expression)
                 for i in range(len(variables)):
                     for j in range(len(res)):
                         res[j] = res[j].subs(variables[i], values[i])
 
                 return np.array(res).reshape(-1)
             elif self.links is not None:
-                mini = 0
-                minv = self.links[0].evaluation.subs(list(zip(variables, values)))
-                for i in range(1, len(self.links)):
+
+                init_i = 0
+                init_v = 0
+                for i in range(len(self.links)):
+                    init_v = self.links[i].evaluation.subs(list(zip(variables, values)))
+                    if init_v > 0:
+                        init_i = i
+                        break
+                if init_v <= 0:
+                    raise ValueError("The TreeFunction can't be calculated with given parameters because of the unsolvable simlex method case!")
+
+                mini = init_i
+                minv = init_v
+                for i in range(init_i + 1, len(self.links)):
                     cv = self.links[i].evaluation.subs(list(zip(variables, values)))
-                    if minv > cv:
+                    if minv > cv >= 0:
                         mini = i
                         minv = cv
                 return self.links[mini].calculate(values, variables)

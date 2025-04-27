@@ -27,15 +27,19 @@ u2 = np.array([])  # переменные, которые мы будем вар
 for i in range(k+1, 2*k+1):
     u2 = np.append(u2, [sp.Symbol(f'u_{i}')])
 
-f1 = solve_simplex(c1, A1, u1, True)
-f2 = solve_simplex(c2, A2, u2, True)
+f1 = solve_simplex(a1, A1, u1, True)
+f2 = solve_simplex(a2, A2, u2, True)
 
 print(f1.input_dimension, f1.output_dimension)
 print(f2.input_dimension, f2.output_dimension)
 
-rf = LinearCombinationFunction(np.array(np.concatenate((a1, a2), 0)), [f1, f2])
-optimal_spot = optimize_by_monte_carlo(rf, ((0, 3, 412), (1, 4, 940), (2, 5, 313)), 500)
+rf = LinearCombinationFunction(np.array(np.concatenate((c1, c2), 0)), [f1, f2])
+optimal_spot = optimize_by_monte_carlo(rf, ((0, 3, 412), (1, 4, 940), (2, 5, 313)), 100)
 print(optimal_spot)
 print(rf.calculate(optimal_spot))
 
-print("Is solution appropriate: ", is_appropriate_solution(optimal_spot, b, [f1, f2], [A1, A2]))
+print("Is solution appropriate: ", is_appropriate_solution(optimal_spot, b, [f1, f2], [A1, A2], subs=1))
+
+print(rf.calculate([363.44980828, 456.2013237, 283.50334995, 38.14198095, 250.85900044, 24.83128383]))
+print(np.matmul(a1, f1.calculate([363.44980828, 456.2013237, 283.50334995])))
+print(np.matmul(a2, f2.calculate([38.14198095, 250.85900044, 24.83128383])))
