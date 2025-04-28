@@ -1,6 +1,8 @@
 from optimisation_methods import optimize_by_monte_carlo
+from optimisation_methods import optimize_by_annealing
 from functions import LinearCombinationFunction
 from simplex_solving_methods import solve_simplex
+from src.tests.verifiers import is_appropriate_solution
 import sympy as sp
 import numpy as np
 
@@ -39,9 +41,15 @@ def run_main():
     print(f2.input_dimension, f2.output_dimension)
 
     rf = LinearCombinationFunction(np.array(np.concatenate((c1, c2), 0)), [f1, f2])
-    optimal_spot = optimize_by_monte_carlo(rf, ((0, 3, 412), (1, 4, 940), (2, 5, 313)), 500)
+    # optimal_spot = optimize_by_monte_carlo(rf, ((0, 3, 412), (1, 4, 940), (2, 5, 313)), 1000)
+    # print(optimal_spot)
+    # print(rf.calculate(optimal_spot))
+    # print("Solution is appropriate:", is_appropriate_solution(optimal_spot, b, [f1, f2], [A1, A2], 1))
+
+    optimal_spot = optimize_by_annealing(rf, 100, ((0, 3, 412), (1, 4, 940), (2, 5, 313)), 2000)
     print(optimal_spot)
     print(rf.calculate(optimal_spot))
+    print("Solution is appropriate:", is_appropriate_solution(optimal_spot, b, [f1, f2], [A1, A2], 1))
 
 if __name__ == '__main__':
     run_main()

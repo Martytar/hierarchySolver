@@ -64,18 +64,10 @@ def _solveTableWithParameter(table, evaluation, basis, currentNode, pair=[]):
     else:
         # если заданы ведущие строка и столбец, преобразуем таблицу и заново запустим метод рекурсивно
 
-        ##Строки для проверки правильности алгоритма преобразования, удалить после тестирования
-        print("Initial table")
-        printTable(tab)
-
         tab[int(pair[0]), :] /= tab[int(pair[0]), int(pair[1])]
         for i in range(0, len(tab)):
             if i != pair[0]:
                 tab[i, :] -= tab[int(pair[0]), :] * tab[i, int(pair[1])]
-
-        ##Строки для проверки правильности алгоритма преобразования, удалить после тестирования
-        print("Upgraded table")
-        printTable(tab)
 
         base[int(pair[0])] = pair[1]
         _solveTableWithParameter(tab, eval, base, currentNode)
