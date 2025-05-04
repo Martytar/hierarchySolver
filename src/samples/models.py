@@ -65,8 +65,9 @@ class TwoLevelModel:
     def restriction_matrices(self, matrices, indexes=None):
 
         def is_compatible_matrices(m1, m2):
-            if len(m1) != len(m2) or len(m1[0] != len(m2[0])):
+            if len(m1) != len(m2) or len(m1[0]) != len(m2[0]):
                 return False
+            return True
 
         def is_non_negative_matrix(m):
             for arr in m:
@@ -158,8 +159,8 @@ class TwoLevelModel:
         for i in range(len(self._restriction_matrices)):
             print(f"{i})", self._restriction_matrices[i])
 
-    def write(self, filename):
-        file = open(filename, 'w')
+    def write(self, filepath):
+        file = open(filepath, 'w')
 
         file.write(f'{self._resource_type_dim}')
         for i in range(len(self._product_type_dims)):
@@ -190,3 +191,5 @@ class TwoLevelModel:
                 for k in range(1, len(matrix[j])):
                     file.write(f' {matrix[j][k]}')
                 file.write('\n')
+
+        file.close()
