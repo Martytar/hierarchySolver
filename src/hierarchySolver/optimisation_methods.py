@@ -63,6 +63,7 @@ def _generate_spot_fast_annealing(spot, T, b):
         c *= l
         l -= new_spot[i] + spot[i]
         c = (c + (new_spot[i] - spot[i])) / l
+
     return new_spot
 
 

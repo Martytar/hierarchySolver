@@ -4,7 +4,7 @@ from src.samples.models import TwoLevelModel
 
 def generate_random_values_two_level_model(model, resource_limit, major_cost_limit, restriction_matrices_limit, minor_cost_limit, is_int_type = False):
 
-    #borders - кортеж из 2 элементов (границы генерации)
+    #borders - кортеж из 1 элементов (границы генерации)
     def get_random(borders):
         number = 0
         if is_int_type:

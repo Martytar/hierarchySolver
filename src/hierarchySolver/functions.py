@@ -16,9 +16,10 @@ class TreeFunction:
         return self.primaryNode.calculate(values, self.variables)
 
     class Node:
-        def __init__(self, evaluation=None, links=None, expression=None, related_tree_function=None):
+        def __init__(self, evaluation=None, links=None, expression=None, parent_node=None, related_tree_function=None):
             self.evaluation = evaluation
             self.related_tree_function = related_tree_function
+            self.parent_node = parent_node
             self.links = links if links is not None else []
             self.expression = expression
 

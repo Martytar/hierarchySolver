@@ -1,55 +1,46 @@
 from optimisation_methods import optimize_by_monte_carlo
 from optimisation_methods import optimize_by_annealing
 from functions import LinearCombinationFunction
-from simplex_solving_methods import solve_simplex
+from simplex_solving_methods import solve_simplex_recursion
 from src.tests.verifiers import is_appropriate_solution
+
+from src.samples.sample_generators import read_from_file
+from src.samples.models import TwoLevelModel
+from src.hierarchySolver.estimation_methods import *
 import sympy as sp
 import numpy as np
+import sys
 
 def run_main():
     print('program is running')
 
-    k = 3
-    n1 = 4
-    n2 = 2
-    b = (412, 940, 313)
+    save_filepath = r'C:\Users\АДМИН\PycharmProjects\hierarchySolver\src\estimation_data'
+    sample_filepath = r'C:\Users\АДМИН\PycharmProjects\hierarchySolver\src\samples\statistical_estimation_samples_data\1'
 
-    a1 = [434, 273, 312, 433]
-    c1 = (425, 306, 67, 155)
+    sys.setrecursionlimit(3000)
+    for i in range(5, 6):
+        for j in range(6, 7):
 
-    A1 = [[17, 37, 46, 50], [3, 18, 45, 40], [34, 43, 18, 48]]
+            save_file = open(save_filepath + rf'\{i}_{j}_stats.txt', 'a')
 
-    a2 = [331, 412]
-    c2 = (322, 279)
-    A2 = [[15, 31], [49, 14], [25, 8]]
+            u = np.array([])
+            for i in range(1, i + 1):
+                u = np.append(u, [sp.Symbol(f'u_{i}')])
 
-    u1 = np.array([])  # переменные, которые мы будем варьировать для первого завода
-    for i in range(1, k + 1):
-        u1 = np.append(u1, [sp.Symbol(f'u_{i}')])
+            for k in range(1, 100):
+                model = read_from_file(sample_filepath + rf'\{i}_{j}_num{k}.txt')
+                with timer() as t:
+                    f = solve_simplex_recursion(model.minor_cost_coefs_list[0], model.restriction_matrices[0], u, True)
 
-    u2 = np.array([])  # переменные, которые мы будем варьировать для второго завода
-    for i in range(k+1, 2*k+1):
-        u2 = np.append(u2, [sp.Symbol(f'u_{i}')])
+                time = t()
+                depth, total = bfs(f.primaryNode)
+                save_file.write(f'{time} {depth} {total}\n')
+                print(f"Test {k} finished! depth:{depth} total:{total}")
 
-    f1 = solve_simplex(a1, A1, u1, True)
-    f2 = solve_simplex(a2, A2, u2, True)
+            save_file.close()
+    sys.setrecursionlimit(1000)
+    print('program finished')
 
-    print(f1.calculate((100, 25, 25)))
-    print(f2.calculate((100, 25, 25)))
-
-    print(f1.input_dimension, f1.output_dimension)
-    print(f2.input_dimension, f2.output_dimension)
-
-    rf = LinearCombinationFunction(np.array(np.concatenate((c1, c2), 0)), [f1, f2])
-    # optimal_spot = optimize_by_monte_carlo(rf, ((0, 3, 412), (1, 4, 940), (2, 5, 313)), 1000)
-    # print(optimal_spot)
-    # print(rf.calculate(optimal_spot))
-    # print("Solution is appropriate:", is_appropriate_solution(optimal_spot, b, [f1, f2], [A1, A2], 1))
-
-    optimal_spot = optimize_by_annealing(rf, 100, ((0, 3, 412), (1, 4, 940), (2, 5, 313)), 2000)
-    print(optimal_spot)
-    print(rf.calculate(optimal_spot))
-    print("Solution is appropriate:", is_appropriate_solution(optimal_spot, b, [f1, f2], [A1, A2], 1))
 
 if __name__ == '__main__':
     run_main()

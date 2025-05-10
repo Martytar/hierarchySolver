@@ -87,7 +87,7 @@ def is_appropriate_solution(strategy_u, b, strategies_f, matrices, subs=0):
             print(np.matmul(matrix, f.calculate(sub_strategy_u)), sub_strategy_u)
 
             if subs>0:
-                print("The difference array of level 2 solution with donated resources (U):")
+                print("The difference array of level 1 solution with donated resources (U):")
                 print_difference_solution_level_2(f.calculate(sub_strategy_u), matrix, sub_strategy_u)
 
             appropriation_flag = False
