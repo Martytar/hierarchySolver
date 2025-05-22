@@ -131,7 +131,7 @@ def solve_simplex_recursion(c, A, u, parametric=False):
         basis = [n+i for i in range(1, m+1)]
 
         f = TreeFunction(u, TreeFunction.Node())
-        _solveTableWithParameter(tab, rest, basis, f.primaryNode, [])
+        _solveTableWithParameter(tab, [], basis, f.primaryNode, rest)
         return f
     else:
         raise ValueError("Non-parametric method isn't ready yet")
@@ -168,7 +168,7 @@ def solve_simplex_stack(c, A, u, parametric=False):
 
                 # Находим потенциальные ведущие строки
                 potential_rows = []
-                for i in range(len(current_tab) - 1):  # Исключаем последнюю строку (целевую)
+                for i in range(len(current_tab) - 1):
                     if current_tab[i, leading_col] > 0:
                         potential_rows.append(i)
 
@@ -214,13 +214,10 @@ def is_system_feasible(expressions, variables):
     # Искусственная переменная t добавляется в конец
     t_index = num_vars
 
-    # Матрица коэффициентов A и вектор b для условий вида A @ [x1, x2, ..., t] <= b
     A = []
     b = []
 
     for expr in expressions:
-        # Преобразуем выражение к виду expr <= 0 (если это не так, измените знак)
-        # Здесь предполагается, что выражения уже имеют вид expr <= 0
         coeffs = []
 
         # Коэффициенты при переменных
@@ -238,21 +235,20 @@ def is_system_feasible(expressions, variables):
     c = np.zeros(num_vars + 1)
     c[t_index] = 1.0  # min t
 
-    # Ограничения: A @ [x1, ..., xn, t] <= b
     A_ub = np.array(A)
     b_ub = np.array(b)
 
     # Границы переменных: x_i >= 0, t >= 0
-    bounds = [(0, None) for _ in range(num_vars + 1)]
+    bounds = [(0, None) for i in range(num_vars + 1)]
 
     # Решаем задачу ЛП
     result = linprog(c, A_ub=A_ub, b_ub=b_ub, bounds=bounds, method='highs')
 
-    # Если задача решена успешно и t <= 0 (с учетом численной погрешности), система совместна
+    # Если задача решена успешно и t <= 0 (с учетом погрешности), система совместна
     if result.success:
         return result.x[t_index] <= 1e-8  # Учет погрешности вычислений
     else:
-        return False  # Если задача нерешаема (например, неограничена), система несовместна
+        return False  # Если задача нерешаема, система несовместна
 
 def printTable(table):
     for i in range(len(table)):

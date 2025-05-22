@@ -1,11 +1,6 @@
-from optimisation_methods import optimize_by_monte_carlo
-from optimisation_methods import optimize_by_annealing
-from functions import LinearCombinationFunction
 from simplex_solving_methods import solve_simplex_recursion
-from src.tests.verifiers import is_appropriate_solution
 
 from src.samples.sample_generators import read_from_file
-from src.samples.models import TwoLevelModel
 from src.hierarchySolver.estimation_methods import *
 import sympy as sp
 import numpy as np
@@ -18,8 +13,8 @@ def run_main():
     sample_filepath = r'C:\Users\АДМИН\PycharmProjects\hierarchySolver\src\samples\statistical_estimation_samples_data\1'
 
     sys.setrecursionlimit(3000)
-    for i in range(5, 6):
-        for j in range(6, 7):
+    for i in range(10, 11):
+        for j in range(3, 11):
 
             save_file = open(save_filepath + rf'\{i}_{j}_stats.txt', 'a')
 
@@ -27,7 +22,7 @@ def run_main():
             for i in range(1, i + 1):
                 u = np.append(u, [sp.Symbol(f'u_{i}')])
 
-            for k in range(1, 100):
+            for k in range(2,   100):
                 model = read_from_file(sample_filepath + rf'\{i}_{j}_num{k}.txt')
                 with timer() as t:
                     f = solve_simplex_recursion(model.minor_cost_coefs_list[0], model.restriction_matrices[0], u, True)
@@ -35,7 +30,7 @@ def run_main():
                 time = t()
                 depth, total = bfs(f.primaryNode)
                 save_file.write(f'{time} {depth} {total}\n')
-                print(f"Test {k} finished! depth:{depth} total:{total}")
+                print(f"Test {k} finished! depth:{depth} total:{total}, time:{time}")
 
             save_file.close()
     sys.setrecursionlimit(1000)

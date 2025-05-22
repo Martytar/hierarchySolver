@@ -1,6 +1,5 @@
-import numpy as np
 import numpy.random as random
-from src.samples.models import TwoLevelModel
+from src.hierarchySolver.models import TwoLevelModel
 
 def generate_random_values_two_level_model(model, resource_limit, major_cost_limit, restriction_matrices_limit, minor_cost_limit, is_int_type = False):
 

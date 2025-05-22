@@ -1,8 +1,4 @@
-from src.samples.models import TwoLevelModel
-from src.samples.sample_generators import generate_random_values_two_level_model, read_from_file
-from numpy import random
-
-import os
+from src.samples.sample_generators import read_from_file
 
 # попытка генерации двухуровневых моделей с 1-6 игроками второго уровня.
 # для каждого случая будут взяты различные комбинации числа ресурсов и продуктов

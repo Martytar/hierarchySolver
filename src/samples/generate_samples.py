@@ -1,4 +1,4 @@
-from src.samples.models import TwoLevelModel
+from src.hierarchySolver.models import TwoLevelModel
 from src.samples.sample_generators import generate_random_values_two_level_model
 
 
